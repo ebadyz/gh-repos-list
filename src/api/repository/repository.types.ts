@@ -20,7 +20,7 @@ export type RepositoryOwner = Readonly<{
 	site_admin: boolean;
 }>;
 
-export type License = Readonly<{
+type License = Readonly<{
 	key: string;
 	name: string;
 	spdx_id: string;
@@ -111,13 +111,13 @@ export type Repository = Readonly<{
 	score: number;
 }>;
 
+export type RepositoryLanguagesResponse = Readonly<Record<string, number>>;
+
 export type RepositoryListResponse = Readonly<{
 	items: ReadonlyArray<Repository>;
 	total_count: number;
 	incomplete_results: boolean;
 }>;
-
-export type RepositoryParams = Pick<Repository, "full_name">;
 
 export type RepositoryListParams = Partial<{
 	q: string;
@@ -125,4 +125,76 @@ export type RepositoryListParams = Partial<{
 	order: string;
 	per_page: number;
 	page: number;
+}>;
+
+export type RepositoryParams = Pick<Repository, "full_name">;
+
+type CommitPerson = Readonly<{
+	name: string;
+	email: string;
+	date: string;
+}>;
+
+type CommitTree = Readonly<{
+	sha: string;
+	url: string;
+}>;
+
+type CommitVerification = Readonly<{
+	verified: boolean;
+	reason: string;
+	signature: string | null;
+	payload: string | null;
+	verified_at?: string;
+}>;
+
+type CommitParent = Readonly<{
+	sha: string;
+	url: string;
+	html_url: string;
+}>;
+
+type CommitUser = RepositoryOwner;
+
+export type Commit = Readonly<{
+	sha: string;
+	node_id: string;
+	commit: Readonly<{
+		author: CommitPerson;
+		committer: CommitPerson;
+		message: string;
+		tree: CommitTree;
+		url: string;
+		comment_count: number;
+		verification: CommitVerification;
+	}>;
+	url: string;
+	html_url: string;
+	comments_url: string;
+	author: CommitUser | null;
+	committer: CommitUser | null;
+	parents: ReadonlyArray<CommitParent>;
+}>;
+
+export type RepositoryCommitResponse = ReadonlyArray<Commit>;
+
+type ReadmeLinks = Readonly<{
+	self: string;
+	git: string;
+	html: string;
+}>;
+
+export type ReadmeResponse = Readonly<{
+	name: string;
+	path: string;
+	sha: string;
+	size: number;
+	url: string;
+	html_url: string;
+	git_url: string;
+	download_url: string | null;
+	type: string;
+	content: string;
+	encoding: string;
+	_links: ReadmeLinks;
 }>;
