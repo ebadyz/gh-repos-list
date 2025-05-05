@@ -1,10 +1,20 @@
 import request from "@/service/request";
-import type { Repository, RepositoryListResponse } from "./repository.types";
+import type {
+	Repository,
+	RepositoryListParams,
+	RepositoryListResponse,
+	RepositoryParams,
+} from "./repository.types";
 
-const getRepositoryList = () =>
-	request.get<RepositoryListResponse>("/repositories");
+const getRepositoryList = (params: RepositoryListParams) =>
+	request.get<RepositoryListResponse>("search/repositories", {
+		params,
+		headers: {
+			Accept: "application/vnd.github.v3+json",
+		},
+	});
 
-const getRepository = (params: Pick<Repository, "full_name">) =>
+const getRepository = (params: RepositoryParams) =>
 	request.get<Repository>(`/repos/${params.full_name}`);
 
 export { getRepository, getRepositoryList };

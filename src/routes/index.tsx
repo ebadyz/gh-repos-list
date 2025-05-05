@@ -1,33 +1,82 @@
 import { useCallback, useEffect, useState } from "react";
+import type { ChangeEvent } from "react";
+
+import {
+	Link,
+	createFileRoute,
+	useNavigate,
+	useSearch,
+} from "@tanstack/react-router";
 
 import type { RepositoryListResponse } from "@/api/repository";
 import { getRepositoryList } from "@/api/repository";
-import useBoolean from "@/hooks/use-boolean/use-boolean";
-import { Link, createFileRoute } from "@tanstack/react-router";
+
+import useBoolean from "@/hooks/use-boolean";
+import usePagination from "@/hooks/use-pagination";
+
+import { compactObject } from "@/utils/compact-object";
 
 export const Route = createFileRoute("/")({
 	component: Repositories,
+	validateSearch: (search: Record<string, unknown>) => ({
+		page: typeof search.page === "number" ? search.page : undefined,
+		q: typeof search.q === "string" ? search.q : undefined,
+		sort: typeof search.sort === "string" ? search.sort : undefined,
+	}),
 });
 
+const DEFAULT_QUERY = "stars:>0";
+
 function Repositories() {
-	const [repositories, setRepositories] = useState<RepositoryListResponse>([]);
+	const searchParams = useSearch({ from: Route.fullPath });
+	const [repositories, setRepositories] = useState<RepositoryListResponse>({
+		items: [],
+		total_count: 0,
+		incomplete_results: false,
+	});
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 	const loading = useBoolean(true);
+	const { nextPage, prevPage, page } = usePagination();
+	const navigate = useNavigate({ from: Route.fullPath });
+	const updateQueryParams = useCallback(
+		(e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+			const { name: inputName, value: inputValue } = e.target;
+			navigate({
+				search: (prev) => ({
+					...prev,
+					[inputName === "search" ? "q" : inputName]: inputValue,
+					page,
+				}),
+			});
+		},
+		[navigate, page],
+	);
 
 	const fetchRepositories = useCallback(async () => {
 		try {
-			const response = await getRepositoryList();
+			const isUserSearch = searchParams.q
+				? searchParams.q.trim().length > 0
+				: false;
+			const query = isUserSearch
+				? `${searchParams.q} in:name,description`
+				: DEFAULT_QUERY;
+			const params = compactObject({
+				q: query,
+				sort: searchParams.sort,
+				order: "desc",
+				per_page: 10,
+				page,
+			});
+			const response = await getRepositoryList(params);
 			setRepositories(response.data);
 		} catch (error) {
-			const errorMessage =
-				error instanceof Error
-					? error.message
-					: "Failed to fetch repositories.";
+			const errorMessage = "An error occurred while fetching repositories.";
 			setErrorMessage(errorMessage);
+			console.error(error);
 		} finally {
 			loading.setFalse();
 		}
-	}, [loading.setFalse]);
+	}, [loading.setFalse, page, searchParams.q, searchParams.sort]);
 
 	useEffect(() => {
 		fetchRepositories();
@@ -56,11 +105,30 @@ function Repositories() {
 	return (
 		<div className="min-h-screen flex flex-col items-center justify-center bg-[#282c34] text-white relative">
 			<header className="w-full max-w-2xl mx-auto p-4">
-				<h1 className="text-3xl font-bold mb-6 text-center">
-					GitHub Repositories
-				</h1>
+				<form className="flex items-center gap-4 mb-8 bg-[#23272f] p-2 rounded-lg">
+					<input
+						name="search"
+						type="search"
+						value={searchParams.q}
+						onChange={updateQueryParams}
+						placeholder="Find a repository…"
+						aria-label="Find a repository"
+						className="flex-1 bg-transparent text-white placeholder-gray-400 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-[#61dafb] border border-[#23272f]"
+					/>
+					<select
+						name="sort"
+						onChange={updateQueryParams}
+						aria-label="Sort"
+						value={searchParams.sort}
+						className="bg-[#23272f] text-white px-4 py-2 rounded border border-[#23272f] focus:outline-none focus:ring-2 focus:ring-[#61dafb]"
+					>
+						<option value="updated">Last Updated</option>
+						<option value="stars">Stars</option>
+						<option value="forks">Forks</option>
+					</select>
+				</form>
 				<ul className="space-y-4">
-					{repositories.map((repo) => (
+					{repositories.items.map((repo) => (
 						<li
 							key={repo.id}
 							aria-label={`Repository: ${repo.full_name}`}
@@ -69,8 +137,6 @@ function Repositories() {
 							<Link
 								from={Route.fullPath}
 								to={`/${repo.full_name}`}
-								target="_blank"
-								rel="noopener noreferrer"
 								className="text-[#61dafb] text-xl font-semibold hover:underline"
 								aria-label={`Open ${repo.full_name} on GitHub`}
 							>
@@ -80,6 +146,14 @@ function Repositories() {
 						</li>
 					))}
 				</ul>
+				<div className="flex justify-center items-center mt-8 gap-4">
+					<button type="button" onClick={prevPage} disabled={page === 1}>
+						Previous
+					</button>
+					<button type="button" onClick={nextPage} disabled={page === 10}>
+						Next
+					</button>
+				</div>
 			</header>
 		</div>
 	);

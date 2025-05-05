@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 
 import type { Repository } from "@/api/repository";
 import { getRepository } from "@/api/repository";
-import useBoolean from "@/hooks/use-boolean/use-boolean";
+import useBoolean from "@/hooks/use-boolean";
 import { createFileRoute, useParams } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/$owner/$repo")({
@@ -33,7 +33,7 @@ function RepositoryDetail() {
 		fetchRepository();
 	}, [fetchRepository]);
 
-	if (loading)
+	if (loading.value)
 		return (
 			<div className="min-h-screen flex items-center justify-center bg-[#282c34] text-white">
 				<span className="text-lg animate-pulse">Loading repository…</span>

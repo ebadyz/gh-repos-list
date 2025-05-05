@@ -15,9 +15,17 @@ export type RepositoryOwner = Readonly<{
 	repos_url: string;
 	events_url: string;
 	received_events_url: string;
-	type: "User" | "Organization";
+	type: string;
 	user_view_type: string;
 	site_admin: boolean;
+}>;
+
+export type License = Readonly<{
+	key: string;
+	name: string;
+	spdx_id: string;
+	url: string;
+	node_id: string;
 }>;
 
 export type Repository = Readonly<{
@@ -67,6 +75,54 @@ export type Repository = Readonly<{
 	labels_url: string;
 	releases_url: string;
 	deployments_url: string;
+	created_at: string;
+	updated_at: string;
+	pushed_at: string;
+	git_url: string;
+	ssh_url: string;
+	clone_url: string;
+	svn_url: string;
+	homepage: string;
+	size: number;
+	stargazers_count: number;
+	watchers_count: number;
+	language: string;
+	has_issues: boolean;
+	has_projects: boolean;
+	has_downloads: boolean;
+	has_wiki: boolean;
+	has_pages: boolean;
+	has_discussions: boolean;
+	forks_count: number;
+	mirror_url: string | null;
+	archived: boolean;
+	disabled: boolean;
+	open_issues_count: number;
+	license: License | null;
+	allow_forking: boolean;
+	is_template: boolean;
+	web_commit_signoff_required: boolean;
+	topics: ReadonlyArray<string>;
+	visibility: string;
+	forks: number;
+	open_issues: number;
+	watchers: number;
+	default_branch: string;
+	score: number;
 }>;
 
-export type RepositoryListResponse = ReadonlyArray<Repository>;
+export type RepositoryListResponse = Readonly<{
+	items: ReadonlyArray<Repository>;
+	total_count: number;
+	incomplete_results: boolean;
+}>;
+
+export type RepositoryParams = Pick<Repository, "full_name">;
+
+export type RepositoryListParams = Partial<{
+	q: string;
+	sort: string;
+	order: string;
+	per_page: number;
+	page: number;
+}>;
