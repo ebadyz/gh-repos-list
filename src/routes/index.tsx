@@ -1,17 +1,21 @@
-import { getRepositoryList } from "@/api/repositories/repositories";
-import type { RepositoryListResponse } from "@/api/repositories/repositories.types";
-import useBoolean from "@/hooks/use-boolean/use-boolean";
-import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 
-const App = () => {
+import type { RepositoryListResponse } from "@/api/repository";
+import { getRepositoryList } from "@/api/repository";
+import useBoolean from "@/hooks/use-boolean/use-boolean";
+import { Link, createFileRoute } from "@tanstack/react-router";
+
+export const Route = createFileRoute("/")({
+	component: Repositories,
+});
+
+function Repositories() {
 	const [repositories, setRepositories] = useState<RepositoryListResponse>([]);
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
-	const loading = useBoolean();
+	const loading = useBoolean(true);
 
 	const fetchRepositories = useCallback(async () => {
 		try {
-			loading.setTrue();
 			const response = await getRepositoryList();
 			setRepositories(response.data);
 		} catch (error) {
@@ -23,7 +27,7 @@ const App = () => {
 		} finally {
 			loading.setFalse();
 		}
-	}, [loading.setFalse, loading.setTrue]);
+	}, [loading.setFalse]);
 
 	useEffect(() => {
 		fetchRepositories();
@@ -62,15 +66,16 @@ const App = () => {
 							aria-label={`Repository: ${repo.full_name}`}
 							className="bg-[#23272f] rounded-lg p-4 shadow hover:bg-[#1a1d23] focus:outline-none focus:ring-2 focus:ring-[#61dafb]"
 						>
-							<a
-								href={repo.html_url}
+							<Link
+								from={Route.fullPath}
+								to={`/${repo.full_name}`}
 								target="_blank"
 								rel="noopener noreferrer"
 								className="text-[#61dafb] text-xl font-semibold hover:underline"
 								aria-label={`Open ${repo.full_name} on GitHub`}
 							>
 								{repo.full_name}
-							</a>
+							</Link>
 							<p className="mt-2 text-base text-gray-300">{repo.description}</p>
 						</li>
 					))}
@@ -78,8 +83,4 @@ const App = () => {
 			</header>
 		</div>
 	);
-};
-
-export const Route = createFileRoute("/")({
-	component: App,
-});
+}

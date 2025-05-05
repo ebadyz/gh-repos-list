@@ -12,12 +12,19 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as IndexImport } from './routes/index'
+import { Route as OwnerRepoImport } from './routes/$owner/$repo'
 
 // Create/Update Routes
 
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const OwnerRepoRoute = OwnerRepoImport.update({
+  id: '/$owner/$repo',
+  path: '/$owner/$repo',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -32,6 +39,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/$owner/$repo': {
+      id: '/$owner/$repo'
+      path: '/$owner/$repo'
+      fullPath: '/$owner/$repo'
+      preLoaderRoute: typeof OwnerRepoImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -39,32 +53,37 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/$owner/$repo': typeof OwnerRepoRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/$owner/$repo': typeof OwnerRepoRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/$owner/$repo': typeof OwnerRepoRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/$owner/$repo'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/$owner/$repo'
+  id: '__root__' | '/' | '/$owner/$repo'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  OwnerRepoRoute: typeof OwnerRepoRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  OwnerRepoRoute: OwnerRepoRoute,
 }
 
 export const routeTree = rootRoute
@@ -77,11 +96,15 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/"
+        "/",
+        "/$owner/$repo"
       ]
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/$owner/$repo": {
+      "filePath": "$owner/$repo.tsx"
     }
   }
 }
