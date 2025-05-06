@@ -2,6 +2,25 @@ import { useCallback, useEffect, useState } from "react";
 import type { ChangeEvent } from "react";
 
 import {
+	Box,
+	Button,
+	ButtonGroup,
+	Card,
+	Heading,
+	Icon,
+	Input,
+	List,
+	Pagination,
+	Portal,
+	Select,
+	Stack,
+	Text,
+	VStack,
+	createListCollection,
+} from "@chakra-ui/react";
+import { RxChevronLeft, RxChevronRight } from "react-icons/rx";
+
+import {
 	Link,
 	createFileRoute,
 	useNavigate,
@@ -13,20 +32,9 @@ import { getRepositoryList } from "@/api/repository";
 
 import useBoolean from "@/hooks/use-boolean";
 import usePagination from "@/hooks/use-pagination";
-import {
-	Box,
-	Button,
-	ButtonGroup,
-	Card,
-	Heading,
-	Icon,
-	List,
-	Pagination,
-	Text,
-} from "@chakra-ui/react";
-import { RxChevronLeft, RxChevronRight } from "react-icons/rx";
 
-import { ColorModeButton } from "@/components/ui/color-mode";
+import CardSkeleton from "@/components/card-skeleton";
+
 import { compactObject } from "@/utils/compact-object";
 
 export const Route = createFileRoute("/")({
@@ -40,6 +48,14 @@ export const Route = createFileRoute("/")({
 
 const DEFAULT_QUERY = "stars:>0";
 const DEFAULT_PAGE_SIZE = 10;
+
+const SORT_OPTIONS = createListCollection({
+	items: [
+		{ label: "Updated", value: "updated" },
+		{ label: "Stars", value: "stars" },
+		{ label: "Forks", value: "forks" },
+	],
+});
 
 function Repositories() {
 	const searchParams = useSearch({ from: Route.fullPath });
@@ -98,50 +114,86 @@ function Repositories() {
 
 	if (loading.value)
 		return (
-			<output
-				aria-live="polite"
-				className="min-h-screen flex items-center justify-center bg-[#282c34] text-white"
-			>
-				<span className="text-lg animate-pulse">Loading repositories…</span>
-			</output>
+			<Box width={{ base: "full", md: "1/2" }} px="4" mx="auto" minH="100vh">
+				<List.Root as="ul" spaceY={4} width="full">
+					<CardSkeleton size={10} />
+				</List.Root>
+			</Box>
 		);
 
 	if (errorMessage)
 		return (
-			<output
-				aria-live="assertive"
-				className="min-h-screen flex items-center justify-center bg-[#282c34] text-red-400"
+			<VStack
+				as="output"
+				width={{ base: "full" }}
+				justifyContent="center"
+				alignItems="center"
+				minH="calc(100vh - 60px)"
 			>
-				<span className="text-lg font-semibold">{errorMessage}</span>
-			</output>
+				<Text fontSize="lg" fontWeight="semibold">
+					{errorMessage}
+				</Text>
+			</VStack>
 		);
 
 	return (
 		<Box width={{ base: "full", md: "1/2" }} px="4" mx="auto">
-			<header className="w-full max-w-2xl mx-auto p-4">
-				<form className="flex items-center gap-4 mb-8 bg-[#23272f] p-2 rounded-lg">
-					<input
-						name="search"
-						type="search"
-						value={searchParams.q}
-						onChange={updateQueryParams}
-						placeholder="Find a repository…"
-						aria-label="Find a repository"
-						className="flex-1 bg-transparent text-white placeholder-gray-400 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-[#61dafb] border border-[#23272f]"
-					/>
-					<select
-						name="sort"
-						onChange={updateQueryParams}
-						aria-label="Sort"
-						value={searchParams.sort}
-						className="bg-[#23272f] text-white px-4 py-2 rounded border border-[#23272f] focus:outline-none focus:ring-2 focus:ring-[#61dafb]"
-					>
-						<option value="updated">Last Updated</option>
-						<option value="stars">Stars</option>
-						<option value="forks">Forks</option>
-					</select>
-				</form>
-			</header>
+			<Stack
+				as="form"
+				direction="row"
+				gap={4}
+				mb={8}
+				bg="bg.secondary"
+				p={2}
+				rounded="lg"
+			>
+				<Input
+					name="search"
+					type="search"
+					value={searchParams.q}
+					onChange={updateQueryParams}
+					placeholder="Find a repository…"
+					aria-label="Find a repository"
+					autoComplete="off"
+				/>
+
+				<Select.Root
+					collection={SORT_OPTIONS}
+					width="1/2"
+					// value={searchParams.sort ? [searchParams.sort] : undefined}
+					// onValueChange={(e) => {
+					// 	navigate({
+					// 		search: (prev) => ({
+					// 			...prev,
+					// 			sort: e.value,
+					// 		}),
+					// 	});
+					// }}
+					multiple={false}
+				>
+					<Select.HiddenSelect />
+					<Select.Control>
+						<Select.Trigger>
+							<Select.ValueText placeholder="Sort" />
+						</Select.Trigger>
+						<Select.IndicatorGroup>
+							<Select.Indicator />
+						</Select.IndicatorGroup>
+					</Select.Control>
+					<Portal>
+						<Select.Positioner>
+							<Select.Content>
+								{SORT_OPTIONS.items.map((option) => (
+									<Select.Item item={option} key={option.value}>
+										{option.label}
+										<Select.ItemIndicator />
+									</Select.Item>
+								))}
+							</Select.Content>
+						</Select.Positioner>
+					</Portal>
+				</Select.Root>
+			</Stack>
 			<List.Root spaceY={4}>
 				{repositories.items.map((repo) => (
 					<Card.Root as="li" key={repo.id}>

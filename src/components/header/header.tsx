@@ -11,7 +11,7 @@ const Header = () => {
 			py="2"
 			shadow="md"
 			bg="bg.secondary"
-			mb="6"
+			mb="4"
 		>
 			<Heading as="h1" size="2xl">
 				GitHub Repos
