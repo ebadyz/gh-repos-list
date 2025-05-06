@@ -79,12 +79,14 @@ const useRepositoryReadme = (params: RepositoryParams) => {
 	const queryResult = useQuery({
 		queryKey: REPOSITORY_QUERY_KEYS.getReadme(),
 		queryFn: () => getRepositoryReadme(params),
+		select: (response) => response.data,
 	});
 
 	return {
 		repositoryReadme: queryResult.data,
 		repositoryReadmeIsLoading: queryResult.isLoading,
 		repositoryReadmeError: queryResult.error,
+		repositoryReadmeRefetch: queryResult.refetch,
 	};
 };
 
