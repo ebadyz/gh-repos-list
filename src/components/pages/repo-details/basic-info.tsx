@@ -1,8 +1,8 @@
 import { useRepositoryDetails } from "@/api/repository";
-import CardSkeleton from "@/components/card-skeleton";
 import ErrorCard from "@/components/error-card";
+import CardSkeleton from "@/components/skeleton-card";
 import { Route } from "@/routes/$owner/$repo";
-import { Box, Card, Text } from "@chakra-ui/react";
+import { Card, Text } from "@chakra-ui/react";
 import { useParams } from "@tanstack/react-router";
 
 const RepositoryBasicInfo = () => {
@@ -41,10 +41,10 @@ const RepositoryBasicInfo = () => {
 				<Text textStyle="2xl" fontWeight="bold">
 					{repositoryDetails?.name}
 				</Text>
-				<Text textStyle="sm" color="colorPalette.700" mb="1">
+				<Text textStyle="sm" color="gray.500" mb="1">
 					by {repositoryDetails?.owner.login}
 				</Text>
-				<Text textStyle="md" color="colorPalette.600">
+				<Text textStyle="md" color="gray.500">
 					{repositoryDetails?.description}
 				</Text>
 			</Card.Body>

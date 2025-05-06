@@ -29,9 +29,10 @@ import {
 
 import usePagination from "@/hooks/use-pagination";
 
-import CardSkeleton from "@/components/card-skeleton";
+import SkeletonCard from "@/components/skeleton-card";
 
 import { useRepositoryList } from "@/api/repository/repository.query";
+import ErrorCard from "@/components/error-card";
 import { compactObject } from "@/utils/compact-object";
 
 export const Route = createFileRoute("/")({
@@ -101,7 +102,7 @@ function Repositories() {
 		return (
 			<Box width={{ base: "full", md: "1/2" }} px="4" mx="auto" minH="100vh">
 				<List.Root as="ul" spaceY={4} width="full">
-					<CardSkeleton size={10} />
+					<SkeletonCard size={10} />
 				</List.Root>
 			</Box>
 		);
@@ -109,26 +110,19 @@ function Repositories() {
 
 	if (repositoryListError) {
 		const errorMessage = `${repositoryListError.message}, Please try again.`;
+		const retryRepositoryList = () => repositoryListRefetch();
 		return (
-			<VStack
+			<ErrorCard
+				errorMessage={errorMessage}
+				onRetry={retryRepositoryList}
+				cardProps={{ p: 4, rounded: "lg", w: { base: "full", md: "1/3" } }}
 				as="output"
 				width={{ base: "full" }}
 				justifyContent="center"
 				alignItems="center"
 				minH="calc(100vh - 60px)"
 				px={4}
-			>
-				<Card.Root p={4} rounded="lg" w={{ base: "full", md: "1/3" }}>
-					<Card.Body spaceY={4}>
-						<Text textStyle="2xl" color="colorPalette.error">
-							{errorMessage}
-						</Text>
-						<Button variant="outline" onClick={() => repositoryListRefetch()}>
-							Try again
-						</Button>
-					</Card.Body>
-				</Card.Root>
-			</VStack>
+			/>
 		);
 	}
 

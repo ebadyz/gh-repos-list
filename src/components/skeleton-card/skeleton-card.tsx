@@ -1,8 +1,8 @@
 import { Skeleton, SkeletonText } from "@chakra-ui/react";
-
 import { Card } from "@chakra-ui/react";
+import type { SkeletonCardProps } from "./skeleton-card.types";
 
-const RepositorySkeleton = ({ size }: { size: number }) => (
+const SkeletonCard = ({ size }: SkeletonCardProps) => (
 	<>
 		{Array.from({ length: size }).map((_, index) => (
 			<Card.Root as="li" key={`skeleton-${index + 1}`}>
@@ -17,4 +17,4 @@ const RepositorySkeleton = ({ size }: { size: number }) => (
 	</>
 );
 
-export default RepositorySkeleton;
+export default SkeletonCard;

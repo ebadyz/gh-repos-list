@@ -49,6 +49,7 @@ const useRepositoryCommits = (
 	const queryResult = useQuery({
 		queryKey: REPOSITORY_QUERY_KEYS.getCommits(),
 		queryFn: () => getRepositoryCommits(params),
+		select: (response) => response.data,
 	});
 
 	return {

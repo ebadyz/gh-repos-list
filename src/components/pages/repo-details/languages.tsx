@@ -1,6 +1,6 @@
 import { useRepositoryLanguages } from "@/api/repository";
-import CardSkeleton from "@/components/card-skeleton";
 import ErrorCard from "@/components/error-card";
+import CardSkeleton from "@/components/skeleton-card";
 import { Route } from "@/routes/$owner/$repo";
 import { Flex, HStack, Text } from "@chakra-ui/react";
 import { Box } from "@chakra-ui/react";
