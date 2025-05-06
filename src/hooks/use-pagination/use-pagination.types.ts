@@ -1,5 +1,1 @@
-export type UsePaginationResult = {
-	nextPage: () => void;
-	prevPage: () => void;
-	page: number;
-};
+export type UsePaginationResult = [number, (page: number) => void];

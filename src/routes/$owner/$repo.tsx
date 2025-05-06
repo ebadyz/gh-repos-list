@@ -16,6 +16,8 @@ import type {
 import useBoolean from "@/hooks/use-boolean";
 import { createFileRoute, useParams } from "@tanstack/react-router";
 
+import { Card } from "@chakra-ui/react";
+
 export const Route = createFileRoute("/$owner/$repo")({
 	component: RepositoryDetail,
 });

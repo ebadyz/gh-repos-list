@@ -13,7 +13,20 @@ import { getRepositoryList } from "@/api/repository";
 
 import useBoolean from "@/hooks/use-boolean";
 import usePagination from "@/hooks/use-pagination";
+import {
+	Box,
+	Button,
+	ButtonGroup,
+	Card,
+	Heading,
+	Icon,
+	List,
+	Pagination,
+	Text,
+} from "@chakra-ui/react";
+import { RxChevronLeft, RxChevronRight } from "react-icons/rx";
 
+import { ColorModeButton } from "@/components/ui/color-mode";
 import { compactObject } from "@/utils/compact-object";
 
 export const Route = createFileRoute("/")({
@@ -26,6 +39,7 @@ export const Route = createFileRoute("/")({
 });
 
 const DEFAULT_QUERY = "stars:>0";
+const DEFAULT_PAGE_SIZE = 10;
 
 function Repositories() {
 	const searchParams = useSearch({ from: Route.fullPath });
@@ -36,7 +50,7 @@ function Repositories() {
 	});
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 	const loading = useBoolean(true);
-	const { nextPage, prevPage, page } = usePagination();
+	const [page, setPage] = usePagination();
 	const navigate = useNavigate({ from: Route.fullPath });
 	const updateQueryParams = useCallback(
 		(e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -64,7 +78,7 @@ function Repositories() {
 				q: query,
 				sort: searchParams.sort,
 				order: "desc",
-				per_page: 10,
+				per_page: DEFAULT_PAGE_SIZE,
 				page,
 			});
 			const response = await getRepositoryList(params);
@@ -103,7 +117,7 @@ function Repositories() {
 		);
 
 	return (
-		<div className="min-h-screen flex flex-col items-center justify-center bg-[#282c34] text-white relative">
+		<Box width={{ base: "full", md: "1/2" }} px="4" mx="auto">
 			<header className="w-full max-w-2xl mx-auto p-4">
 				<form className="flex items-center gap-4 mb-8 bg-[#23272f] p-2 rounded-lg">
 					<input
@@ -127,34 +141,59 @@ function Repositories() {
 						<option value="forks">Forks</option>
 					</select>
 				</form>
-				<ul className="space-y-4">
-					{repositories.items.map((repo) => (
-						<li
-							key={repo.id}
-							aria-label={`Repository: ${repo.full_name}`}
-							className="bg-[#23272f] rounded-lg p-4 shadow hover:bg-[#1a1d23] focus:outline-none focus:ring-2 focus:ring-[#61dafb]"
-						>
+			</header>
+			<List.Root spaceY={4}>
+				{repositories.items.map((repo) => (
+					<Card.Root as="li" key={repo.id}>
+						<Card.Header>
 							<Link
 								from={Route.fullPath}
 								to={`/${repo.full_name}`}
-								className="text-[#61dafb] text-xl font-semibold hover:underline"
 								aria-label={`Open ${repo.full_name} on GitHub`}
 							>
-								{repo.full_name}
+								<Heading
+									size="xl"
+									color="cornflowerblue"
+									_hover={{ textDecoration: "underline" }}
+								>
+									{repo.full_name}
+								</Heading>
 							</Link>
-							<p className="mt-2 text-base text-gray-300">{repo.description}</p>
-						</li>
-					))}
-				</ul>
-				<div className="flex justify-center items-center mt-8 gap-4">
-					<button type="button" onClick={prevPage} disabled={page === 1}>
-						Previous
-					</button>
-					<button type="button" onClick={nextPage} disabled={page === 10}>
-						Next
-					</button>
-				</div>
-			</header>
-		</div>
+						</Card.Header>
+						<Card.Body>
+							<Text color="colorPalette.400">{repo.description}</Text>
+						</Card.Body>
+					</Card.Root>
+				))}
+			</List.Root>
+			<Pagination.Root
+				as="footer"
+				pageSize={DEFAULT_PAGE_SIZE}
+				page={page}
+				count={repositories.total_count}
+				onPageChange={(details) => setPage(details.page)}
+				my="10"
+			>
+				<ButtonGroup
+					variant="ghost"
+					size="sm"
+					width="full"
+					justifyContent="center"
+				>
+					<Pagination.PrevTrigger asChild>
+						<Button variant="outline">
+							<Icon as={RxChevronLeft} />
+							Previous
+						</Button>
+					</Pagination.PrevTrigger>
+					<Pagination.NextTrigger asChild>
+						<Button variant="outline">
+							Next
+							<Icon as={RxChevronRight} />
+						</Button>
+					</Pagination.NextTrigger>
+				</ButtonGroup>
+			</Pagination.Root>
+		</Box>
 	);
 }

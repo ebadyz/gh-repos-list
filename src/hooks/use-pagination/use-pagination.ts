@@ -9,17 +9,14 @@ const usePagination = (): UsePaginationResult => {
 
 	const page = search.page ?? 1;
 
-	const nextPage = useCallback(() => {
-		if (!page) return;
-		navigate({ search: { page: page + 1, q: search.q, sort: search.sort } });
-	}, [page, navigate, search.q, search.sort]);
+	const setPage = useCallback(
+		(page: number) => {
+			navigate({ search: { page, q: search.q, sort: search.sort } });
+		},
+		[navigate, search.q, search.sort],
+	);
 
-	const prevPage = useCallback(() => {
-		if (page === 1) return;
-		navigate({ search: { page: page - 1, q: search.q, sort: search.sort } });
-	}, [page, navigate, search.q, search.sort]);
-
-	return { nextPage, prevPage, page };
+	return [page, setPage];
 };
 
 export default usePagination;
