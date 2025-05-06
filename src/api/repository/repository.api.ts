@@ -14,7 +14,7 @@ const getRepositoryList = (params: RepositoryListParams) =>
 		params,
 	});
 
-const getRepository = (params: RepositoryParams) =>
+const getRepositoryDetails = (params: RepositoryParams) =>
 	request.get<Repository>(`/repos/${params.full_name}`);
 
 const getRepositoryLanguages = (params: RepositoryParams) =>
@@ -35,7 +35,7 @@ const getRepositoryReadme = (params: RepositoryParams) =>
 	request.get<ReadmeResponse>(`/repos/${params.full_name}/readme`);
 
 export {
-	getRepository,
+	getRepositoryDetails,
 	getRepositoryList,
 	getRepositoryLanguages,
 	getRepositoryCommits,

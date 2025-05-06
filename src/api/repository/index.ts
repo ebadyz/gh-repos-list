@@ -1,10 +1,10 @@
 export {
-	getRepositoryList,
-	getRepository,
-	getRepositoryLanguages,
-	getRepositoryCommits,
-	getRepositoryReadme,
-} from "./repository";
+	useRepositoryList,
+	useRepositoryDetails,
+	useRepositoryCommits,
+	useRepositoryLanguages,
+	useRepositoryReadme,
+} from "./repository.query";
 
 export type {
 	Repository,

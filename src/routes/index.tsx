@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import type { ChangeEvent } from "react";
 
 import {
@@ -27,14 +27,11 @@ import {
 	useSearch,
 } from "@tanstack/react-router";
 
-import type { RepositoryListResponse } from "@/api/repository";
-import { getRepositoryList } from "@/api/repository";
-
-import useBoolean from "@/hooks/use-boolean";
 import usePagination from "@/hooks/use-pagination";
 
 import CardSkeleton from "@/components/card-skeleton";
 
+import { useRepositoryList } from "@/api/repository/repository.query";
 import { compactObject } from "@/utils/compact-object";
 
 export const Route = createFileRoute("/")({
@@ -47,7 +44,7 @@ export const Route = createFileRoute("/")({
 });
 
 const DEFAULT_QUERY = "stars:>0";
-const DEFAULT_PAGE_SIZE = 10;
+const REPOSITORIES_PER_PAGE = 10;
 
 const SORT_OPTIONS = createListCollection({
 	items: [
@@ -59,15 +56,33 @@ const SORT_OPTIONS = createListCollection({
 
 function Repositories() {
 	const searchParams = useSearch({ from: Route.fullPath });
-	const [repositories, setRepositories] = useState<RepositoryListResponse>({
-		items: [],
-		total_count: 0,
-		incomplete_results: false,
-	});
-	const [errorMessage, setErrorMessage] = useState<string | null>(null);
-	const loading = useBoolean(true);
+
+	const isUserSearch = searchParams.q
+		? searchParams.q.trim().length > 0
+		: false;
+	const query = isUserSearch
+		? `${searchParams.q} in:name,description`
+		: DEFAULT_QUERY;
+
 	const [page, setPage] = usePagination();
+
+	const {
+		repositoryList,
+		repositoryListIsLoading,
+		repositoryListError,
+		repositoryListRefetch,
+	} = useRepositoryList(
+		compactObject({
+			q: query,
+			sort: searchParams.sort,
+			order: "desc",
+			per_page: REPOSITORIES_PER_PAGE,
+			page,
+		}),
+	);
+
 	const navigate = useNavigate({ from: Route.fullPath });
+
 	const updateQueryParams = useCallback(
 		(e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
 			const { name: inputName, value: inputValue } = e.target;
@@ -82,37 +97,7 @@ function Repositories() {
 		[navigate, page],
 	);
 
-	const fetchRepositories = useCallback(async () => {
-		try {
-			const isUserSearch = searchParams.q
-				? searchParams.q.trim().length > 0
-				: false;
-			const query = isUserSearch
-				? `${searchParams.q} in:name,description`
-				: DEFAULT_QUERY;
-			const params = compactObject({
-				q: query,
-				sort: searchParams.sort,
-				order: "desc",
-				per_page: DEFAULT_PAGE_SIZE,
-				page,
-			});
-			const response = await getRepositoryList(params);
-			setRepositories(response.data);
-		} catch (error) {
-			const errorMessage = "An error occurred while fetching repositories.";
-			setErrorMessage(errorMessage);
-			console.error(error);
-		} finally {
-			loading.setFalse();
-		}
-	}, [loading.setFalse, page, searchParams.q, searchParams.sort]);
-
-	useEffect(() => {
-		fetchRepositories();
-	}, [fetchRepositories]);
-
-	if (loading.value)
+	if (repositoryListIsLoading) {
 		return (
 			<Box width={{ base: "full", md: "1/2" }} px="4" mx="auto" minH="100vh">
 				<List.Root as="ul" spaceY={4} width="full">
@@ -120,8 +105,10 @@ function Repositories() {
 				</List.Root>
 			</Box>
 		);
+	}
 
-	if (errorMessage)
+	if (repositoryListError) {
+		const errorMessage = `${repositoryListError.message}, Please try again.`;
 		return (
 			<VStack
 				as="output"
@@ -129,12 +116,21 @@ function Repositories() {
 				justifyContent="center"
 				alignItems="center"
 				minH="calc(100vh - 60px)"
+				px={4}
 			>
-				<Text fontSize="lg" fontWeight="semibold">
-					{errorMessage}
-				</Text>
+				<Card.Root p={4} rounded="lg" w={{ base: "full", md: "1/3" }}>
+					<Card.Body spaceY={4}>
+						<Text textStyle="2xl" color="colorPalette.error">
+							{errorMessage}
+						</Text>
+						<Button variant="outline" onClick={() => repositoryListRefetch()}>
+							Try again
+						</Button>
+					</Card.Body>
+				</Card.Root>
 			</VStack>
 		);
+	}
 
 	return (
 		<Box width={{ base: "full", md: "1/2" }} px="4" mx="auto">
@@ -195,7 +191,7 @@ function Repositories() {
 				</Select.Root>
 			</Stack>
 			<List.Root spaceY={4}>
-				{repositories.items.map((repo) => (
+				{repositoryList?.items.map((repo) => (
 					<Card.Root as="li" key={repo.id}>
 						<Card.Header>
 							<Link
@@ -220,9 +216,9 @@ function Repositories() {
 			</List.Root>
 			<Pagination.Root
 				as="footer"
-				pageSize={DEFAULT_PAGE_SIZE}
+				pageSize={REPOSITORIES_PER_PAGE}
 				page={page}
-				count={repositories.total_count}
+				count={repositoryList?.total_count}
 				onPageChange={(details) => setPage(details.page)}
 				my="10"
 			>

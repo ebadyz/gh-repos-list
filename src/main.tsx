@@ -1,6 +1,9 @@
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 import ReactDOM from "react-dom/client";
 
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+
 import { routeTree } from "./routeTree.gen";
 
 import "./styles.css";
@@ -21,12 +24,17 @@ declare module "@tanstack/react-router" {
 	}
 }
 
+const queryClient = new QueryClient();
+
 const rootElement = document.getElementById("app");
 if (rootElement && !rootElement.innerHTML) {
 	const root = ReactDOM.createRoot(rootElement);
 	root.render(
-		<Provider>
-			<RouterProvider router={router} />
-		</Provider>,
+		<QueryClientProvider client={queryClient}>
+			<Provider>
+				<RouterProvider router={router} />
+			</Provider>
+			<ReactQueryDevtools initialIsOpen={false} position="right" />
+		</QueryClientProvider>,
 	);
 }

@@ -198,3 +198,11 @@ export type ReadmeResponse = Readonly<{
 	encoding: string;
 	_links: ReadmeLinks;
 }>;
+
+export type RepositoryQueryKey =
+	| "all"
+	| "repositories"
+	| "getDetails"
+	| "getCommits"
+	| "getLanguages"
+	| "getReadme";
