@@ -1,5 +1,9 @@
 import { Box, Card } from "@chakra-ui/react";
 import ReactMarkdown from "react-markdown";
+import rehypeHighlight from "rehype-highlight";
+import rehypeRaw from "rehype-raw";
+import remarkBreaks from "remark-breaks";
+import remarkGfm from "remark-gfm";
 
 import { useRepositoryReadme } from "@/api/repository";
 
@@ -50,15 +54,8 @@ const RepositoryReadme = () => {
 			<Card.Body overflow="auto" flexGrow={1}>
 				<Box className="markdown-content">
 					<ReactMarkdown
-						components={{
-							code: ({ className, children, ...props }) => {
-								return (
-									<code className={className} {...props}>
-										{children}
-									</code>
-								);
-							},
-						}}
+						remarkPlugins={[remarkGfm, remarkBreaks]}
+						rehypePlugins={[rehypeRaw, rehypeHighlight]}
 					>
 						{atob(repositoryReadme?.content ?? "")}
 					</ReactMarkdown>

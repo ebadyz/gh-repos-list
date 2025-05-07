@@ -57,7 +57,7 @@ const RepositoryBasicInfo = () => {
 							<Button variant="outline" size="sm" onClick={toggleStar}>
 								<Icon
 									as={RxStar}
-									color={starToggle.pressed ? "yellow" : "gray"}
+									color={starToggle.pressed ? "yellow.solid" : "gray.400"}
 								/>
 								{repositoryDetails.stargazers_count}
 							</Button>
