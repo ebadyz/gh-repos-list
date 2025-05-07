@@ -58,6 +58,7 @@ const Pagination = ({
 						Previous
 					</Button>
 				</ChakraPagination.PrevTrigger>
+				<ChakraPagination.PageText />
 				<ChakraPagination.NextTrigger asChild>
 					<Button variant="outline">
 						Next
