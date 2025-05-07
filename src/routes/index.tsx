@@ -1,24 +1,7 @@
 import { useCallback } from "react";
 import type { ChangeEvent } from "react";
 
-import {
-	Box,
-	Button,
-	ButtonGroup,
-	Card,
-	Heading,
-	Icon,
-	Input,
-	List,
-	Pagination,
-	Portal,
-	Select,
-	Stack,
-	Text,
-	VStack,
-	createListCollection,
-} from "@chakra-ui/react";
-import { RxChevronLeft, RxChevronRight } from "react-icons/rx";
+import { Box, Card, Heading, List, Text } from "@chakra-ui/react";
 
 import {
 	Link,
@@ -27,12 +10,15 @@ import {
 	useSearch,
 } from "@tanstack/react-router";
 
-import usePagination from "@/hooks/use-pagination";
-
+import ErrorCard from "@/components/error-card";
+import { RepositoryOptions } from "@/components/pages/home";
+import Pagination from "@/components/pagination";
 import SkeletonCard from "@/components/skeleton-card";
 
+import usePagination from "@/hooks/use-pagination";
+
 import { useRepositoryList } from "@/api/repository/repository.query";
-import ErrorCard from "@/components/error-card";
+
 import { compactObject } from "@/utils/compact-object";
 
 export const Route = createFileRoute("/")({
@@ -46,14 +32,6 @@ export const Route = createFileRoute("/")({
 
 const DEFAULT_QUERY = "stars:>0";
 const REPOSITORIES_PER_PAGE = 10;
-
-const SORT_OPTIONS = createListCollection({
-	items: [
-		{ label: "Updated", value: "updated" },
-		{ label: "Stars", value: "stars" },
-		{ label: "Forks", value: "forks" },
-	],
-});
 
 function Repositories() {
 	const searchParams = useSearch({ from: Route.fullPath });
@@ -84,19 +62,19 @@ function Repositories() {
 
 	const navigate = useNavigate({ from: Route.fullPath });
 
-	const updateQueryParams = useCallback(
-		(e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-			const { name: inputName, value: inputValue } = e.target;
-			navigate({
-				search: (prev) => ({
-					...prev,
-					[inputName === "search" ? "q" : inputName]: inputValue,
-					page,
-				}),
-			});
-		},
-		[navigate, page],
-	);
+	// const updateQueryParams = useCallback(
+	// 	(e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+	// 		const { name: inputName, value: inputValue } = e.target;
+	// 		navigate({
+	// 			search: (prev) => ({
+	// 				...prev,
+	// 				[inputName === "search" ? "q" : inputName]: inputValue,
+	// 				page,
+	// 			}),
+	// 		});
+	// 	},
+	// 	[navigate, page],
+	// );
 
 	if (repositoryListIsLoading) {
 		return (
@@ -128,62 +106,7 @@ function Repositories() {
 
 	return (
 		<Box width={{ base: "full", md: "1/2" }} px="4" mx="auto">
-			<Stack
-				as="form"
-				direction="row"
-				gap={4}
-				mb={8}
-				bg="bg.secondary"
-				p={2}
-				rounded="lg"
-			>
-				<Input
-					name="search"
-					type="search"
-					value={searchParams.q}
-					onChange={updateQueryParams}
-					placeholder="Find a repository…"
-					aria-label="Find a repository"
-					autoComplete="off"
-				/>
-
-				<Select.Root
-					collection={SORT_OPTIONS}
-					width="1/2"
-					// value={searchParams.sort ? [searchParams.sort] : undefined}
-					// onValueChange={(e) => {
-					// 	navigate({
-					// 		search: (prev) => ({
-					// 			...prev,
-					// 			sort: e.value,
-					// 		}),
-					// 	});
-					// }}
-					multiple={false}
-				>
-					<Select.HiddenSelect />
-					<Select.Control>
-						<Select.Trigger>
-							<Select.ValueText placeholder="Sort" />
-						</Select.Trigger>
-						<Select.IndicatorGroup>
-							<Select.Indicator />
-						</Select.IndicatorGroup>
-					</Select.Control>
-					<Portal>
-						<Select.Positioner>
-							<Select.Content>
-								{SORT_OPTIONS.items.map((option) => (
-									<Select.Item item={option} key={option.value}>
-										{option.label}
-										<Select.ItemIndicator />
-									</Select.Item>
-								))}
-							</Select.Content>
-						</Select.Positioner>
-					</Portal>
-				</Select.Root>
-			</Stack>
+			<RepositoryOptions />
 			<List.Root spaceY={4}>
 				{repositoryList?.items.map((repo) => (
 					<Card.Root as="li" key={repo.id}>
@@ -208,34 +131,12 @@ function Repositories() {
 					</Card.Root>
 				))}
 			</List.Root>
-			<Pagination.Root
-				as="footer"
+			<Pagination
 				pageSize={REPOSITORIES_PER_PAGE}
 				page={page}
 				count={repositoryList?.total_count}
 				onPageChange={(details) => setPage(details.page)}
-				my="10"
-			>
-				<ButtonGroup
-					variant="ghost"
-					size="sm"
-					width="full"
-					justifyContent="center"
-				>
-					<Pagination.PrevTrigger asChild>
-						<Button variant="outline">
-							<Icon as={RxChevronLeft} />
-							Previous
-						</Button>
-					</Pagination.PrevTrigger>
-					<Pagination.NextTrigger asChild>
-						<Button variant="outline">
-							Next
-							<Icon as={RxChevronRight} />
-						</Button>
-					</Pagination.NextTrigger>
-				</ButtonGroup>
-			</Pagination.Root>
+			/>
 		</Box>
 	);
 }
