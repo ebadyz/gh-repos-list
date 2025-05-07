@@ -16,7 +16,7 @@ export const Route = createFileRoute("/")({
 	component: Repositories,
 	validateSearch: (search: RepositoryListParams) => ({
 		page: search.page && search.page > 0 ? search.page : undefined,
-		q: search.q,
+		q: search.q ? search.q : undefined,
 		sort:
 			search.sort && VALID_SORT_VALUES.includes(search.sort)
 				? search.sort

@@ -1,6 +1,14 @@
 import { HStack, Heading } from "@chakra-ui/react";
 
+import { Link } from "@tanstack/react-router";
+
 import { ColorModeButton } from "@/components/ui/color-mode";
+
+const DEFAULT_SEARCH_PARAMS = {
+	page: 1,
+	q: "",
+	sort: "updated",
+};
 
 const Header = () => {
 	return (
@@ -14,7 +22,9 @@ const Header = () => {
 			mb="4"
 		>
 			<Heading as="h1" size="2xl">
-				GitHub Repos
+				<Link to="/" search={DEFAULT_SEARCH_PARAMS}>
+					GitHub Repos
+				</Link>
 			</Heading>
 			<ColorModeButton />
 		</HStack>

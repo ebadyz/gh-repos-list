@@ -1,4 +1,13 @@
-import { Button, Card, HStack, Icon, Text, useToggle } from "@chakra-ui/react";
+import {
+	Box,
+	Button,
+	Card,
+	HStack,
+	Icon,
+	Link,
+	Text,
+	useToggle,
+} from "@chakra-ui/react";
 
 import { ErrorCard } from "@/components/error-card";
 import { SkeletonCard } from "@/components/skeleton-card";
@@ -47,11 +56,22 @@ const RepositoryBasicInfo = ({ repositoryName }: RepositoryBasicInfoProps) => {
 		<Card.Root>
 			<Card.Body>
 				{repositoryDetails ? (
-					<>
+					<Box spaceY={4}>
+						<Text textStyle="2xl" fontWeight="bold">
+							{repositoryDetails?.name}
+						</Text>
+						<Text textStyle="sm" color="gray.500" mb="1">
+							by {repositoryDetails?.owner.login}
+						</Text>
+						<Text textStyle="md" color="gray.500">
+							{repositoryDetails?.description || "No description provided"}
+						</Text>
 						<HStack justifyContent="space-between">
-							<Text textStyle="2xl" fontWeight="bold">
-								{repositoryDetails?.name}
-							</Text>
+							<Button variant="outline" size="sm" asChild>
+								<Link href={repositoryDetails?.html_url} target="_blank">
+									Open in GitHub
+								</Link>
+							</Button>
 							<Button variant="outline" size="sm" onClick={toggleStar}>
 								<Icon
 									as={RxStar}
@@ -60,13 +80,7 @@ const RepositoryBasicInfo = ({ repositoryName }: RepositoryBasicInfoProps) => {
 								{repositoryDetails.stargazers_count}
 							</Button>
 						</HStack>
-						<Text textStyle="sm" color="gray.500" mb="1">
-							by {repositoryDetails?.owner.login}
-						</Text>
-						<Text textStyle="md" color="gray.500">
-							{repositoryDetails?.description}
-						</Text>
-					</>
+					</Box>
 				) : (
 					<Text textStyle="2xl" fontWeight="bold">
 						No repository details found
