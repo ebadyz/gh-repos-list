@@ -1,4 +1,4 @@
-export const compactObject = <T extends Record<string, unknown>>(
+export const withTruthyValues = <T extends Record<string, unknown>>(
 	obj: T,
 ): Partial<T> => {
 	const result: Partial<T> = {};

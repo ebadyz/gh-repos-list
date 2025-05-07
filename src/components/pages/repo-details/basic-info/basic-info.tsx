@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import {
 	Box,
 	Button,
@@ -8,12 +10,12 @@ import {
 	Text,
 	useToggle,
 } from "@chakra-ui/react";
+import { RxStar } from "react-icons/rx";
 
 import { ErrorCard } from "@/components/error-card";
 import { SkeletonCard } from "@/components/skeleton-card";
 
 import { type RepositoryParams, useRepositoryDetails } from "@/api/repository";
-import { RxStar } from "react-icons/rx";
 
 type RepositoryBasicInfoProps = {
 	repositoryName: RepositoryParams["repositoryName"];
@@ -31,8 +33,17 @@ const RepositoryBasicInfo = ({ repositoryName }: RepositoryBasicInfoProps) => {
 		repositoryName,
 	});
 
+	const [starCount, setStarCount] = useState(
+		repositoryDetails?.stargazers_count ?? 0,
+	);
+
 	const toggleStar = () => {
-		starToggle.setPressed(!starToggle.pressed);
+		const nextStarCount = starToggle.pressed ? starCount - 1 : starCount + 1;
+
+		setTimeout(() => {
+			starToggle.setPressed(!starToggle.pressed);
+			setStarCount(nextStarCount);
+		}, 1000);
 	};
 
 	if (repositoryDetailsIsLoading) {
@@ -77,7 +88,7 @@ const RepositoryBasicInfo = ({ repositoryName }: RepositoryBasicInfoProps) => {
 									as={RxStar}
 									color={starToggle.pressed ? "yellow.solid" : "gray.400"}
 								/>
-								{repositoryDetails.stargazers_count}
+								{starCount}
 							</Button>
 						</HStack>
 					</Box>

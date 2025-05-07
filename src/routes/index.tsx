@@ -10,7 +10,7 @@ import { SkeletonCard } from "@/components/skeleton-card";
 import { useRepositoryList } from "@/api/repository/repository.query";
 import type { RepositoryListParams } from "@/api/repository/repository.types";
 
-import { compactObject } from "@/utils/compact-object";
+import { withTruthyValues } from "@/utils/with-truthy-values";
 
 export const Route = createFileRoute("/")({
 	component: Repositories,
@@ -38,7 +38,7 @@ function Repositories() {
 		repositoryListError,
 		repositoryListRefetch,
 	} = useRepositoryList(
-		compactObject({
+		withTruthyValues({
 			q: searchParams.q
 				? `${searchParams.q} in:name,description`
 				: DEFAULT_QUERY,
