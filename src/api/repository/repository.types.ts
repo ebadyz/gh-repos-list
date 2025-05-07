@@ -127,8 +127,6 @@ export type RepositoryListParams = Partial<{
 	page: number;
 }>;
 
-export type RepositoryParams = Pick<Repository, "full_name">;
-
 type CommitPerson = Readonly<{
 	name: string;
 	email: string;
@@ -155,6 +153,14 @@ type CommitParent = Readonly<{
 }>;
 
 type CommitUser = RepositoryOwner;
+
+export type RepositoryParams = {
+	repositoryName: string;
+};
+
+export type RepositoryCommitsParams = RepositoryParams & {
+	per_page: number;
+};
 
 export type Commit = Readonly<{
 	sha: string;

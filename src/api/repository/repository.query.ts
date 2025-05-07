@@ -9,6 +9,7 @@ import {
 } from "./repository.api";
 import REPOSITORY_QUERY_KEYS from "./repository.keys";
 import type {
+	RepositoryCommitsParams,
 	RepositoryListParams,
 	RepositoryParams,
 } from "./repository.types";
@@ -43,9 +44,7 @@ const useRepositoryDetails = (params: RepositoryParams) => {
 	};
 };
 
-const useRepositoryCommits = (
-	params: RepositoryParams & { per_page: number },
-) => {
+const useRepositoryCommits = (params: RepositoryCommitsParams) => {
 	const queryResult = useQuery({
 		queryKey: [...REPOSITORY_QUERY_KEYS.getCommits(), params],
 		queryFn: () => getRepositoryCommits(params),

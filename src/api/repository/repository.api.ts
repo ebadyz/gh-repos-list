@@ -15,24 +15,27 @@ const getRepositoryList = (params: RepositoryListParams) =>
 	});
 
 const getRepositoryDetails = (params: RepositoryParams) =>
-	request.get<Repository>(`/repos/${params.full_name}`);
+	request.get<Repository>(`/repos/${params.repositoryName}`);
 
 const getRepositoryLanguages = (params: RepositoryParams) =>
 	request.get<RepositoryLanguagesResponse>(
-		`/repos/${params.full_name}/languages`,
+		`/repos/${params.repositoryName}/languages`,
 	);
 
 const getRepositoryCommits = (
 	params: RepositoryParams & { per_page: number },
 ) =>
-	request.get<RepositoryCommitResponse>(`/repos/${params.full_name}/commits`, {
-		params: {
-			per_page: params.per_page,
+	request.get<RepositoryCommitResponse>(
+		`/repos/${params.repositoryName}/commits`,
+		{
+			params: {
+				per_page: params.per_page,
+			},
 		},
-	});
+	);
 
 const getRepositoryReadme = (params: RepositoryParams) =>
-	request.get<ReadmeResponse>(`/repos/${params.full_name}/readme`);
+	request.get<ReadmeResponse>(`/repos/${params.repositoryName}/readme`);
 
 export {
 	getRepositoryDetails,

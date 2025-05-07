@@ -15,15 +15,19 @@ import { compactObject } from "@/utils/compact-object";
 export const Route = createFileRoute("/")({
 	component: Repositories,
 	validateSearch: (search: RepositoryListParams) => ({
-		page: search.page,
+		page: search.page && search.page > 0 ? search.page : undefined,
 		q: search.q,
-		sort: search.sort,
+		sort:
+			search.sort && VALID_SORT_VALUES.includes(search.sort)
+				? search.sort
+				: undefined,
 	}),
 });
 
-const DEFAULT_QUERY = "stars:>0";
+const DEFAULT_QUERY = "stars:>0 in:name,description";
 const DEFAULT_PAGE = 1;
 const REPOSITORIES_PER_PAGE = 10;
+const VALID_SORT_VALUES = ["updated", "stars", "forks"];
 
 function Repositories() {
 	const searchParams = useSearch({ from: Route.fullPath });
@@ -35,7 +39,9 @@ function Repositories() {
 		repositoryListRefetch,
 	} = useRepositoryList(
 		compactObject({
-			q: searchParams.q ?? DEFAULT_QUERY,
+			q: searchParams.q
+				? `${searchParams.q} in:name,description`
+				: DEFAULT_QUERY,
 			sort: searchParams.sort || DEFAULT_SORT,
 			order: "desc",
 			per_page: REPOSITORIES_PER_PAGE,

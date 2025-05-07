@@ -13,7 +13,7 @@ const DETAULT_RECENT_COMMITS_COUNT = 5;
 
 const RepositoryCommits = () => {
 	const params = useParams({ from: Route.fullPath });
-	const full_name = decodeURIComponent(params.repo);
+	const repositoryName = decodeURIComponent(params.repo);
 
 	const {
 		repositoryCommits,
@@ -21,7 +21,7 @@ const RepositoryCommits = () => {
 		repositoryCommitsError,
 		repositoryCommitsRefetch,
 	} = useRepositoryCommits({
-		full_name,
+		repositoryName,
 		per_page: DETAULT_RECENT_COMMITS_COUNT,
 	});
 

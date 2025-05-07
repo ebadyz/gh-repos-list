@@ -50,12 +50,8 @@ const RepositoryOptions = () => {
 		[updateSearchParams],
 	);
 
-	useEffect(() => {
-		setSearchValue(search.q || "");
-	}, [search.q]);
-
 	return (
-		<HStack as="form" gap={4} mb={4} bg="bg.secondary" py={4} rounded="lg">
+		<HStack gap={4} mb={4} bg="bg.secondary" py={4} rounded="lg">
 			<Input
 				name="search"
 				type="search"

@@ -31,7 +31,7 @@ const languageColors = [
 
 const RepositoryLanguages = () => {
 	const params = useParams({ from: Route.fullPath });
-	const full_name = decodeURIComponent(params.repo);
+	const repositoryName = decodeURIComponent(params.repo);
 
 	const {
 		repositoryLanguages,
@@ -39,7 +39,7 @@ const RepositoryLanguages = () => {
 		repositoryLanguagesError,
 		repositoryLanguagesRefetch,
 	} = useRepositoryLanguages({
-		full_name,
+		repositoryName,
 	});
 
 	if (repositoryLanguagesIsLoading) {

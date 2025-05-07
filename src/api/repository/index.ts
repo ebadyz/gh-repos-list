@@ -15,4 +15,5 @@ export type {
 	ReadmeResponse,
 	RepositoryListParams,
 	RepositoryParams,
+	RepositoryCommitsParams,
 } from "./repository.types";

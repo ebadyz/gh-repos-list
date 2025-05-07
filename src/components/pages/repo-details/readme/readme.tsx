@@ -15,7 +15,7 @@ import { useParams } from "@tanstack/react-router";
 
 const RepositoryReadme = () => {
 	const params = useParams({ from: Route.fullPath });
-	const full_name = decodeURIComponent(params.repo);
+	const repositoryName = decodeURIComponent(params.repo);
 
 	const {
 		repositoryReadme,
@@ -23,7 +23,7 @@ const RepositoryReadme = () => {
 		repositoryReadmeError,
 		repositoryReadmeRefetch,
 	} = useRepositoryReadme({
-		full_name,
+		repositoryName,
 	});
 
 	if (repositoryReadmeIsLoading) {
