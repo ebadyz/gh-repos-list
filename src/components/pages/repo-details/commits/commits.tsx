@@ -66,7 +66,7 @@ const RepositoryCommits = ({ repositoryName }: RepositoryCommitsProps) => {
 									<Avatar.Image src={commit.author?.avatar_url} />
 									<Avatar.Fallback>{commit.author?.login}</Avatar.Fallback>
 								</Avatar.Root>
-								<Box flex={1}>
+								<Box flex={1} maxW="100%">
 									<Text fontWeight="medium">{commit.commit.message}</Text>
 									<HStack fontSize="sm" color="gray.500">
 										<Text>{commit.author?.login} committed on</Text>

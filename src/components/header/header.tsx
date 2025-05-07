@@ -5,9 +5,9 @@ import { Link } from "@tanstack/react-router";
 import { ColorModeButton } from "@/components/ui/color-mode";
 
 const DEFAULT_SEARCH_PARAMS = {
-	page: 1,
-	q: "",
-	sort: "updated",
+	page: undefined,
+	q: undefined,
+	sort: undefined,
 };
 
 const Header = () => {
