@@ -1,43 +1,58 @@
 import { DEFAULT_SORT, SORT_OPTIONS } from "@/components/pages/home/options";
 import { Route } from "@/routes/__root";
+import { debounce } from "@/utils/debounce";
 import { HStack, Input, Portal, Select } from "@chakra-ui/react";
 import { useNavigate, useSearch } from "@tanstack/react-router";
-import { useCallback } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 const RepositoryOptions = () => {
 	const search = useSearch({ from: Route.fullPath });
 	const navigate = useNavigate({ from: Route.fullPath });
+	const [searchValue, setSearchValue] = useState(search.q ?? "");
+
+	const updateSearchParams = useCallback(
+		(updates: Partial<typeof search>) => {
+			navigate({
+				search: {
+					...search,
+					...updates,
+					page: undefined,
+				},
+			});
+		},
+		[navigate, search],
+	);
+
+	const debouncedSearch = useMemo(
+		() =>
+			debounce((query: string) => {
+				updateSearchParams({ q: query || undefined });
+			}, 500),
+		[updateSearchParams],
+	);
 
 	const handleSearch = useCallback(
 		(e: React.ChangeEvent<HTMLInputElement>) => {
-			const newSearch = { ...search };
-			if (e.target.value) {
-				newSearch.q = e.target.value;
-			} else {
-				newSearch.q = undefined;
-			}
-			newSearch.page = undefined;
-			navigate({ search: newSearch });
+			const value = e.target.value;
+			setSearchValue(value);
+			debouncedSearch(value);
 		},
-		[navigate, search],
+		[debouncedSearch],
 	);
 
 	const handleSortChange = useCallback(
 		(details: { value: string[] }) => {
 			const sortValue = details.value[0];
-			const newSearch = { ...search };
-			if (sortValue === DEFAULT_SORT) {
-				newSearch.sort = undefined;
-			} else {
-				newSearch.sort = sortValue;
-			}
-			newSearch.page = undefined;
-			navigate({ search: newSearch });
+			updateSearchParams({
+				sort: sortValue === DEFAULT_SORT ? undefined : sortValue,
+			});
 		},
-		[navigate, search],
+		[updateSearchParams],
 	);
 
-	const currentSortValue = search.sort || DEFAULT_SORT;
+	useEffect(() => {
+		setSearchValue(search.q || "");
+	}, [search.q]);
 
 	return (
 		<HStack as="form" gap={4} mb={4} bg="bg.secondary" py={4} rounded="lg">
@@ -47,7 +62,7 @@ const RepositoryOptions = () => {
 				placeholder="Find a repository…"
 				aria-label="Find a repository"
 				autoComplete="off"
-				value={search.q || ""}
+				value={searchValue}
 				onChange={handleSearch}
 			/>
 
@@ -55,7 +70,7 @@ const RepositoryOptions = () => {
 				collection={SORT_OPTIONS}
 				width="1/2"
 				multiple={false}
-				value={[currentSortValue]}
+				value={[search.sort || DEFAULT_SORT]}
 				onValueChange={handleSortChange}
 			>
 				<Select.HiddenSelect />

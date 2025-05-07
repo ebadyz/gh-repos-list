@@ -12,7 +12,7 @@ const ErrorCard = ({
 			<Card.Root
 				p={4}
 				rounded="lg"
-				w={{ base: "full", md: "1/3" }}
+				w={{ base: "full", lg: "1/3" }}
 				{...cardProps}
 			>
 				<Card.Body alignItems="center" justifyContent="center" spaceY={4}>

@@ -4,38 +4,29 @@ import { Link, createFileRoute, useSearch } from "@tanstack/react-router";
 
 import { ErrorCard } from "@/components/error-card";
 import { Pagination, RepositoryOptions } from "@/components/pages";
+import { DEFAULT_SORT } from "@/components/pages/home/options";
 import { SkeletonCard } from "@/components/skeleton-card";
 
-import { DEFAULT_SORT } from "@/components/pages/home/options";
-import usePagination from "@/hooks/use-pagination";
-
 import { useRepositoryList } from "@/api/repository/repository.query";
+import type { RepositoryListParams } from "@/api/repository/repository.types";
 
 import { compactObject } from "@/utils/compact-object";
 
 export const Route = createFileRoute("/")({
 	component: Repositories,
-	validateSearch: (search: Record<string, unknown>) => ({
-		page: typeof search.page === "number" ? search.page : undefined,
-		q: typeof search.q === "string" ? search.q : undefined,
-		sort: typeof search.sort === "string" ? search.sort : undefined,
+	validateSearch: (search: RepositoryListParams) => ({
+		page: search.page,
+		q: search.q,
+		sort: search.sort,
 	}),
 });
 
 const DEFAULT_QUERY = "stars:>0";
+const DEFAULT_PAGE = 1;
 const REPOSITORIES_PER_PAGE = 10;
 
 function Repositories() {
 	const searchParams = useSearch({ from: Route.fullPath });
-
-	const isUserSearch = searchParams.q
-		? searchParams.q.trim().length > 0
-		: false;
-	const query = isUserSearch
-		? `${searchParams.q} in:name,description`
-		: DEFAULT_QUERY;
-
-	const [page, setPage] = usePagination();
 
 	const {
 		repositoryList,
@@ -44,29 +35,13 @@ function Repositories() {
 		repositoryListRefetch,
 	} = useRepositoryList(
 		compactObject({
-			q: query,
+			q: searchParams.q ?? DEFAULT_QUERY,
 			sort: searchParams.sort || DEFAULT_SORT,
 			order: "desc",
 			per_page: REPOSITORIES_PER_PAGE,
-			page,
+			page: searchParams.page ?? DEFAULT_PAGE,
 		}),
 	);
-
-	// const navigate = useNavigate({ from: Route.fullPath });
-
-	// const updateQueryParams = useCallback(
-	// 	(e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-	// 		const { name: inputName, value: inputValue } = e.target;
-	// 		navigate({
-	// 			search: (prev) => ({
-	// 				...prev,
-	// 				[inputName === "search" ? "q" : inputName]: inputValue,
-	// 				page,
-	// 			}),
-	// 		});
-	// 	},
-	// 	[navigate, page],
-	// );
 
 	if (repositoryListIsLoading) {
 		return (
@@ -79,7 +54,7 @@ function Repositories() {
 	}
 
 	if (repositoryListError) {
-		const errorMessage = `${repositoryListError.message}, Please try again.`;
+		const errorMessage = `${repositoryListError.message}, please try again.`;
 		const retryRepositoryList = () => repositoryListRefetch();
 		return (
 			<ErrorCard
@@ -125,9 +100,8 @@ function Repositories() {
 			</List.Root>
 			<Pagination
 				pageSize={REPOSITORIES_PER_PAGE}
-				page={page}
+				page={searchParams.page ?? 1}
 				count={repositoryList?.total_count}
-				onPageChange={(details) => setPage(details.page)}
 			/>
 		</Box>
 	);
