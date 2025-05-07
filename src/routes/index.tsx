@@ -1,12 +1,12 @@
-import { useCallback } from "react";
-import type { ChangeEvent } from "react";
+// import { useCallback } from "react";
+// import type { ChangeEvent } from "react";
 
 import { Box, Card, Heading, List, Text } from "@chakra-ui/react";
 
 import {
 	Link,
 	createFileRoute,
-	useNavigate,
+	// useNavigate,
 	useSearch,
 } from "@tanstack/react-router";
 
@@ -59,7 +59,7 @@ function Repositories() {
 		}),
 	);
 
-	const navigate = useNavigate({ from: Route.fullPath });
+	// const navigate = useNavigate({ from: Route.fullPath });
 
 	// const updateQueryParams = useCallback(
 	// 	(e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
