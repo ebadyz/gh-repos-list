@@ -1,7 +1,8 @@
-import { Route } from "@/routes/__root";
-import { useNavigate, useSearch } from "@tanstack/react-router";
 import { useCallback } from "react";
 import type { UsePaginationResult } from "./use-pagination.types";
+
+import { Route } from "@/routes/__root";
+import { useNavigate, useSearch } from "@tanstack/react-router";
 
 const usePagination = (): UsePaginationResult => {
 	const search = useSearch({ from: Route.fullPath });
@@ -11,9 +12,15 @@ const usePagination = (): UsePaginationResult => {
 
 	const setPage = useCallback(
 		(page: number) => {
-			navigate({ search: { page, q: search.q, sort: search.sort } });
+			const newSearch = { ...search };
+			if (page === 1) {
+				newSearch.page = undefined;
+			} else {
+				newSearch.page = page;
+			}
+			navigate({ search: newSearch });
 		},
-		[navigate, search.q, search.sort],
+		[navigate, search],
 	);
 
 	return [page, setPage];

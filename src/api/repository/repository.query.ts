@@ -15,7 +15,7 @@ import type {
 
 const useRepositoryList = (params: RepositoryListParams) => {
 	const queryResult = useQuery({
-		queryKey: REPOSITORY_QUERY_KEYS.repositories(),
+		queryKey: [...REPOSITORY_QUERY_KEYS.repositories(), params],
 		queryFn: () => getRepositoryList(params),
 		select: (response) => response.data,
 	});
@@ -30,7 +30,7 @@ const useRepositoryList = (params: RepositoryListParams) => {
 
 const useRepositoryDetails = (params: RepositoryParams) => {
 	const queryResult = useQuery({
-		queryKey: REPOSITORY_QUERY_KEYS.getDetails(),
+		queryKey: [...REPOSITORY_QUERY_KEYS.getDetails(), params],
 		queryFn: () => getRepositoryDetails(params),
 		select: (response) => response.data,
 	});
@@ -47,7 +47,7 @@ const useRepositoryCommits = (
 	params: RepositoryParams & { per_page: number },
 ) => {
 	const queryResult = useQuery({
-		queryKey: REPOSITORY_QUERY_KEYS.getCommits(),
+		queryKey: [...REPOSITORY_QUERY_KEYS.getCommits(), params],
 		queryFn: () => getRepositoryCommits(params),
 		select: (response) => response.data,
 	});
@@ -62,7 +62,7 @@ const useRepositoryCommits = (
 
 const useRepositoryLanguages = (params: RepositoryParams) => {
 	const queryResult = useQuery({
-		queryKey: REPOSITORY_QUERY_KEYS.getLanguages(),
+		queryKey: [...REPOSITORY_QUERY_KEYS.getLanguages(), params],
 		queryFn: () => getRepositoryLanguages(params),
 		select: (response) => response.data,
 	});
@@ -77,7 +77,7 @@ const useRepositoryLanguages = (params: RepositoryParams) => {
 
 const useRepositoryReadme = (params: RepositoryParams) => {
 	const queryResult = useQuery({
-		queryKey: REPOSITORY_QUERY_KEYS.getReadme(),
+		queryKey: [...REPOSITORY_QUERY_KEYS.getReadme(), params],
 		queryFn: () => getRepositoryReadme(params),
 		select: (response) => response.data,
 	});
