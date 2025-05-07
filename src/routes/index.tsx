@@ -1,19 +1,12 @@
-// import { useCallback } from "react";
-// import type { ChangeEvent } from "react";
-
 import { Box, Card, Heading, List, Text } from "@chakra-ui/react";
 
-import {
-	Link,
-	createFileRoute,
-	// useNavigate,
-	useSearch,
-} from "@tanstack/react-router";
+import { Link, createFileRoute, useSearch } from "@tanstack/react-router";
 
 import { ErrorCard } from "@/components/error-card";
 import { Pagination, RepositoryOptions } from "@/components/pages";
 import { SkeletonCard } from "@/components/skeleton-card";
 
+import { DEFAULT_SORT } from "@/components/pages/home/options";
 import usePagination from "@/hooks/use-pagination";
 
 import { useRepositoryList } from "@/api/repository/repository.query";
@@ -52,7 +45,7 @@ function Repositories() {
 	} = useRepositoryList(
 		compactObject({
 			q: query,
-			sort: searchParams.sort,
+			sort: searchParams.sort || DEFAULT_SORT,
 			order: "desc",
 			per_page: REPOSITORIES_PER_PAGE,
 			page,
