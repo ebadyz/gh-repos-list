@@ -13,7 +13,7 @@ const DETAULT_RECENT_COMMITS_COUNT = 5;
 
 const RepositoryCommits = () => {
 	const params = useParams({ from: Route.fullPath });
-	const full_name = `${params.owner}/${params.repo}`;
+	const full_name = decodeURIComponent(`${params.owner}/${params.repo}`);
 
 	const {
 		repositoryCommits,

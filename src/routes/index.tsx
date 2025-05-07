@@ -80,7 +80,7 @@ function Repositories() {
 						<Card.Header>
 							<Link
 								from={Route.fullPath}
-								to={`/${repo.full_name}`}
+								to={`/${encodeURIComponent(repo.full_name)}`}
 								aria-label={`Open ${repo.full_name} on GitHub`}
 							>
 								<Heading

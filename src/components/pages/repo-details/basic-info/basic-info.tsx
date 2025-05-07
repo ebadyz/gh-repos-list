@@ -11,7 +11,7 @@ import { RxStar } from "react-icons/rx";
 
 const RepositoryBasicInfo = () => {
 	const params = useParams({ from: Route.fullPath });
-	const full_name = `${params.owner}/${params.repo}`;
+	const full_name = decodeURIComponent(`${params.owner}/${params.repo}`);
 
 	const starToggle = useToggle({ defaultPressed: false });
 
