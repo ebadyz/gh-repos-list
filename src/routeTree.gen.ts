@@ -11,20 +11,20 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as RepoImport } from './routes/$repo'
 import { Route as IndexImport } from './routes/index'
-import { Route as OwnerRepoImport } from './routes/$owner/$repo'
 
 // Create/Update Routes
+
+const RepoRoute = RepoImport.update({
+  id: '/$repo',
+  path: '/$repo',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const OwnerRepoRoute = OwnerRepoImport.update({
-  id: '/$owner/$repo',
-  path: '/$owner/$repo',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -39,11 +39,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
-    '/$owner/$repo': {
-      id: '/$owner/$repo'
-      path: '/$owner/$repo'
-      fullPath: '/$owner/$repo'
-      preLoaderRoute: typeof OwnerRepoImport
+    '/$repo': {
+      id: '/$repo'
+      path: '/$repo'
+      fullPath: '/$repo'
+      preLoaderRoute: typeof RepoImport
       parentRoute: typeof rootRoute
     }
   }
@@ -53,37 +53,37 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/$owner/$repo': typeof OwnerRepoRoute
+  '/$repo': typeof RepoRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/$owner/$repo': typeof OwnerRepoRoute
+  '/$repo': typeof RepoRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
-  '/$owner/$repo': typeof OwnerRepoRoute
+  '/$repo': typeof RepoRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/$owner/$repo'
+  fullPaths: '/' | '/$repo'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/$owner/$repo'
-  id: '__root__' | '/' | '/$owner/$repo'
+  to: '/' | '/$repo'
+  id: '__root__' | '/' | '/$repo'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  OwnerRepoRoute: typeof OwnerRepoRoute
+  RepoRoute: typeof RepoRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  OwnerRepoRoute: OwnerRepoRoute,
+  RepoRoute: RepoRoute,
 }
 
 export const routeTree = rootRoute
@@ -97,14 +97,14 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/$owner/$repo"
+        "/$repo"
       ]
     },
     "/": {
       "filePath": "index.tsx"
     },
-    "/$owner/$repo": {
-      "filePath": "$owner/$repo.tsx"
+    "/$repo": {
+      "filePath": "$repo.tsx"
     }
   }
 }

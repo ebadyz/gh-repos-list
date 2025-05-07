@@ -9,11 +9,12 @@ import { GridItem, SimpleGrid } from "@chakra-ui/react";
 
 import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/$owner/$repo")({
+export const Route = createFileRoute("/$repo")({
 	component: RepositoryDetail,
 });
 
 function RepositoryDetail() {
+	console.log("RepositoryDetail");
 	return (
 		<SimpleGrid columns={{ base: 1, md: 6 }} gap={{ base: 3, md: 6 }} p={4}>
 			<GridItem colSpan={{ base: 1, md: 2 }} spaceY={3}>

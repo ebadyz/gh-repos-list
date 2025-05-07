@@ -11,7 +11,7 @@ import {
 import { ErrorCard } from "@/components/error-card";
 import { SkeletonCard } from "@/components/skeleton-card";
 
-import { Route } from "@/routes/$owner/$repo";
+import { Route } from "@/routes/$repo";
 
 import { useParams } from "@tanstack/react-router";
 
@@ -31,7 +31,7 @@ const languageColors = [
 
 const RepositoryLanguages = () => {
 	const params = useParams({ from: Route.fullPath });
-	const full_name = decodeURIComponent(`${params.owner}/${params.repo}`);
+	const full_name = decodeURIComponent(params.repo);
 
 	const {
 		repositoryLanguages,
