@@ -3,6 +3,7 @@ import type {
 	ReadmeResponse,
 	Repository,
 	RepositoryCommitResponse,
+	RepositoryCommitsParams,
 	RepositoryLanguagesResponse,
 	RepositoryListParams,
 	RepositoryListResponse,
@@ -22,9 +23,7 @@ const getRepositoryLanguages = (params: RepositoryParams) =>
 		`/repos/${params.repositoryName}/languages`,
 	);
 
-const getRepositoryCommits = (
-	params: RepositoryParams & { per_page: number },
-) =>
+const getRepositoryCommits = (params: RepositoryCommitsParams) =>
 	request.get<RepositoryCommitResponse>(
 		`/repos/${params.repositoryName}/commits`,
 		{

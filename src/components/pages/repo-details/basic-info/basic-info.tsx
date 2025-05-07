@@ -1,18 +1,16 @@
 import { Button, Card, HStack, Icon, Text, useToggle } from "@chakra-ui/react";
 
-import { Route } from "@/routes/$repo";
-import { useParams } from "@tanstack/react-router";
-
 import { ErrorCard } from "@/components/error-card";
 import { SkeletonCard } from "@/components/skeleton-card";
 
-import { useRepositoryDetails } from "@/api/repository";
+import { type RepositoryParams, useRepositoryDetails } from "@/api/repository";
 import { RxStar } from "react-icons/rx";
 
-const RepositoryBasicInfo = () => {
-	const params = useParams({ from: Route.fullPath });
-	const repositoryName = decodeURIComponent(params.repo);
+type RepositoryBasicInfoProps = {
+	repositoryName: RepositoryParams["repositoryName"];
+};
 
+const RepositoryBasicInfo = ({ repositoryName }: RepositoryBasicInfoProps) => {
 	const starToggle = useToggle({ defaultPressed: false });
 
 	const {

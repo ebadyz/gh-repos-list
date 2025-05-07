@@ -11,11 +11,10 @@ import {
 import { ErrorCard } from "@/components/error-card";
 import { SkeletonCard } from "@/components/skeleton-card";
 
-import { Route } from "@/routes/$repo";
-
-import { useParams } from "@tanstack/react-router";
-
-import { useRepositoryLanguages } from "@/api/repository";
+import {
+	type RepositoryParams,
+	useRepositoryLanguages,
+} from "@/api/repository";
 
 const languageColors = [
 	"blue",
@@ -29,10 +28,11 @@ const languageColors = [
 	"yellow",
 ];
 
-const RepositoryLanguages = () => {
-	const params = useParams({ from: Route.fullPath });
-	const repositoryName = decodeURIComponent(params.repo);
+type RepositoryLanguagesProps = {
+	repositoryName: RepositoryParams["repositoryName"];
+};
 
+const RepositoryLanguages = ({ repositoryName }: RepositoryLanguagesProps) => {
 	const {
 		repositoryLanguages,
 		repositoryLanguagesIsLoading,

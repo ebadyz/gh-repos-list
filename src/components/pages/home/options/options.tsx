@@ -1,9 +1,13 @@
-import { DEFAULT_SORT, SORT_OPTIONS } from "@/components/pages/home/options";
-import { Route } from "@/routes/__root";
-import { debounce } from "@/utils/debounce";
+import { useCallback, useMemo, useState } from "react";
+
 import { HStack, Input, Portal, Select } from "@chakra-ui/react";
+
+import { Route } from "@/routes/__root";
 import { useNavigate, useSearch } from "@tanstack/react-router";
-import { useCallback, useEffect, useMemo, useState } from "react";
+
+import { DEFAULT_SORT, SORT_OPTIONS } from "@/components/pages/home/options";
+
+import { debounce } from "@/utils/debounce";
 
 const RepositoryOptions = () => {
 	const search = useSearch({ from: Route.fullPath });

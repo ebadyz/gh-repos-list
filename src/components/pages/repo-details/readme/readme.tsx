@@ -1,22 +1,22 @@
 import { Box, Card } from "@chakra-ui/react";
+
 import ReactMarkdown from "react-markdown";
+
 import rehypeHighlight from "rehype-highlight";
 import rehypeRaw from "rehype-raw";
 import remarkBreaks from "remark-breaks";
 import remarkGfm from "remark-gfm";
 
-import { useRepositoryReadme } from "@/api/repository";
-
 import { ErrorCard } from "@/components/error-card";
 import { SkeletonCard } from "@/components/skeleton-card";
 
-import { Route } from "@/routes/$repo";
-import { useParams } from "@tanstack/react-router";
+import { type RepositoryParams, useRepositoryReadme } from "@/api/repository";
 
-const RepositoryReadme = () => {
-	const params = useParams({ from: Route.fullPath });
-	const repositoryName = decodeURIComponent(params.repo);
+type RepositoryReadmeProps = {
+	repositoryName: RepositoryParams["repositoryName"];
+};
 
+const RepositoryReadme = ({ repositoryName }: RepositoryReadmeProps) => {
 	const {
 		repositoryReadme,
 		repositoryReadmeIsLoading,

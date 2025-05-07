@@ -1,20 +1,18 @@
 import { Avatar, Box, Card, HStack, Stack, Text } from "@chakra-ui/react";
 
-import { Route } from "@/routes/$repo";
-
-import { useParams } from "@tanstack/react-router";
-
 import { ErrorCard } from "@/components/error-card";
 import { SkeletonCard } from "@/components/skeleton-card";
 
 import { useRepositoryCommits } from "@/api/repository";
+import type { RepositoryParams } from "@/api/repository";
 
 const DETAULT_RECENT_COMMITS_COUNT = 5;
 
-const RepositoryCommits = () => {
-	const params = useParams({ from: Route.fullPath });
-	const repositoryName = decodeURIComponent(params.repo);
+type RepositoryCommitsProps = {
+	repositoryName: RepositoryParams["repositoryName"];
+};
 
+const RepositoryCommits = ({ repositoryName }: RepositoryCommitsProps) => {
 	const {
 		repositoryCommits,
 		repositoryCommitsIsLoading,

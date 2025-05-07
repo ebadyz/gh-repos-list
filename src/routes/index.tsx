@@ -1,4 +1,4 @@
-import { Box, Card, Heading, List, Text } from "@chakra-ui/react";
+import { Alert, Box, Card, Heading, List, Text } from "@chakra-ui/react";
 
 import { Link, createFileRoute, useSearch } from "@tanstack/react-router";
 
@@ -49,9 +49,13 @@ function Repositories() {
 		}),
 	);
 
+	const hasRepositories =
+		repositoryList?.items && repositoryList?.items.length > 0;
+
 	if (repositoryListIsLoading) {
 		return (
 			<Box width={{ base: "full", md: "1/2" }} px="4" mx="auto" minH="100vh">
+				<RepositoryOptions />
 				<List.Root as="ul" spaceY={4} width="full">
 					<SkeletonCard size={10} />
 				</List.Root>
@@ -81,34 +85,45 @@ function Repositories() {
 		<Box width={{ base: "full", md: "1/2" }} px="4" mx="auto">
 			<RepositoryOptions />
 			<List.Root spaceY={4}>
-				{repositoryList?.items.map((repo) => (
-					<Card.Root as="li" key={repo.id}>
-						<Card.Header>
-							<Link
-								from={Route.fullPath}
-								to={`/${encodeURIComponent(repo.full_name)}`}
-								aria-label={`Open ${repo.full_name} on GitHub`}
-							>
-								<Heading
-									size="xl"
-									color="cornflowerblue"
-									_hover={{ textDecoration: "underline" }}
-								>
-									{repo.full_name}
-								</Heading>
-							</Link>
-						</Card.Header>
-						<Card.Body>
-							<Text color="colorPalette.400">{repo.description}</Text>
-						</Card.Body>
-					</Card.Root>
-				))}
+				{hasRepositories ? (
+					<>
+						{repositoryList?.items.map((repo) => (
+							<Card.Root as="li" key={repo.id}>
+								<Card.Header>
+									<Link
+										from={Route.fullPath}
+										to={`/${encodeURIComponent(repo.full_name)}`}
+										aria-label={`Open ${repo.full_name} on GitHub`}
+									>
+										<Heading
+											size="xl"
+											color="cornflowerblue"
+											_hover={{ textDecoration: "underline" }}
+										>
+											{repo.full_name}
+										</Heading>
+									</Link>
+								</Card.Header>
+								<Card.Body>
+									<Text color="colorPalette.400">{repo.description}</Text>
+								</Card.Body>
+							</Card.Root>
+						))}
+					</>
+				) : (
+					<Alert.Root status="info">
+						<Alert.Indicator />
+						<Alert.Title>No repositories found</Alert.Title>
+					</Alert.Root>
+				)}
 			</List.Root>
-			<Pagination
-				pageSize={REPOSITORIES_PER_PAGE}
-				page={searchParams.page ?? 1}
-				count={repositoryList?.total_count}
-			/>
+			{hasRepositories && (
+				<Pagination
+					pageSize={REPOSITORIES_PER_PAGE}
+					page={searchParams.page ?? 1}
+					count={repositoryList?.total_count}
+				/>
+			)}
 		</Box>
 	);
 }
