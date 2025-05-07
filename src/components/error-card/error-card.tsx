@@ -15,7 +15,7 @@ const ErrorCard = ({
 				w={{ base: "full", md: "1/3" }}
 				{...cardProps}
 			>
-				<Card.Body spaceY={4}>
+				<Card.Body alignItems="center" justifyContent="center" spaceY={4}>
 					<Text textStyle="2xl" color="colorPalette.error">
 						{errorMessage}
 					</Text>

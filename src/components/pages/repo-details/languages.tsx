@@ -1,11 +1,21 @@
-import { useRepositoryLanguages } from "@/api/repository";
+import {
+	Box,
+	Card,
+	Flex,
+	HStack,
+	SimpleGrid,
+	Stack,
+	Text,
+} from "@chakra-ui/react";
+
 import ErrorCard from "@/components/error-card";
 import CardSkeleton from "@/components/skeleton-card";
+
 import { Route } from "@/routes/$owner/$repo";
-import { Flex, HStack, Text } from "@chakra-ui/react";
-import { Box } from "@chakra-ui/react";
-import { Card, Stack } from "@chakra-ui/react";
+
 import { useParams } from "@tanstack/react-router";
+
+import { useRepositoryLanguages } from "@/api/repository";
 
 const languageColors = [
 	"blue",
@@ -69,43 +79,49 @@ const RepositoryLanguages = () => {
 				<Card.Title>Languages</Card.Title>
 			</Card.Header>
 			<Card.Body>
-				<Stack spaceY={4}>
-					<Box position="relative" h="2" overflow="hidden" borderRadius="md">
-						<Flex w="full">
-							{sortedLanguages.map((item) => (
-								<Box
-									key={item.language}
-									bg={`${item.color}.500`}
-									w={`${item.percentage}%`}
-									h="2"
-								/>
-							))}
-						</Flex>
-					</Box>
-
-					<Stack spaceY={2} mt={2} flexDir={{ base: "column", md: "row" }}>
-						{sortedLanguages.map((item) => (
-							<HStack key={item.language} justify="space-between">
-								<HStack>
+				{sortedLanguages.length === 0 ? (
+					<Text textStyle="sm" color="gray.500">
+						No languages found
+					</Text>
+				) : (
+					<Stack spaceY={4}>
+						<Box position="relative" h="2" overflow="hidden" borderRadius="md">
+							<Flex w="full">
+								{sortedLanguages.map((item) => (
 									<Box
+										key={item.language}
 										bg={`${item.color}.500`}
-										w="3"
-										h="3"
-										borderRadius="full"
+										w={`${item.percentage}%`}
+										h="2"
 									/>
-									<Text textStyle="sm" fontWeight="medium">
-										{item.language}
-									</Text>
+								))}
+							</Flex>
+						</Box>
+
+						<SimpleGrid columns={{ base: 1, md: 2 }} columnGap={8} rowGap={2}>
+							{sortedLanguages.map((item) => (
+								<HStack key={item.language} justify="space-between">
+									<HStack>
+										<Box
+											bg={`${item.color}.500`}
+											w="3"
+											h="3"
+											borderRadius="full"
+										/>
+										<Text textStyle="sm" fontWeight="medium">
+											{item.language}
+										</Text>
+									</HStack>
+									<HStack>
+										<Text textStyle="sm" fontWeight="medium">
+											{item.percentage.toFixed(1)}%
+										</Text>
+									</HStack>
 								</HStack>
-								<HStack>
-									<Text textStyle="sm" fontWeight="medium">
-										{item.percentage.toFixed(1)}%
-									</Text>
-								</HStack>
-							</HStack>
-						))}
+							))}
+						</SimpleGrid>
 					</Stack>
-				</Stack>
+				)}
 			</Card.Body>
 		</Card.Root>
 	);

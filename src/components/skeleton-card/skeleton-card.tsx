@@ -1,5 +1,4 @@
-import { Skeleton, SkeletonText } from "@chakra-ui/react";
-import { Card } from "@chakra-ui/react";
+import { Card, Skeleton, SkeletonText } from "@chakra-ui/react";
 import type { SkeletonCardProps } from "./skeleton-card.types";
 
 const SkeletonCard = ({ size }: SkeletonCardProps) => (

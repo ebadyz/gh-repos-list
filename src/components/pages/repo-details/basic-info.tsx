@@ -1,9 +1,12 @@
-import { useRepositoryDetails } from "@/api/repository";
+import { Card, Text } from "@chakra-ui/react";
+
+import { Route } from "@/routes/$owner/$repo";
+import { useParams } from "@tanstack/react-router";
+
 import ErrorCard from "@/components/error-card";
 import CardSkeleton from "@/components/skeleton-card";
-import { Route } from "@/routes/$owner/$repo";
-import { Card, Text } from "@chakra-ui/react";
-import { useParams } from "@tanstack/react-router";
+
+import { useRepositoryDetails } from "@/api/repository";
 
 const RepositoryBasicInfo = () => {
 	const params = useParams({ from: Route.fullPath });
@@ -38,15 +41,23 @@ const RepositoryBasicInfo = () => {
 	return (
 		<Card.Root>
 			<Card.Body>
-				<Text textStyle="2xl" fontWeight="bold">
-					{repositoryDetails?.name}
-				</Text>
-				<Text textStyle="sm" color="gray.500" mb="1">
-					by {repositoryDetails?.owner.login}
-				</Text>
-				<Text textStyle="md" color="gray.500">
-					{repositoryDetails?.description}
-				</Text>
+				{repositoryDetails ? (
+					<>
+						<Text textStyle="2xl" fontWeight="bold">
+							{repositoryDetails?.name}
+						</Text>
+						<Text textStyle="sm" color="gray.500" mb="1">
+							by {repositoryDetails?.owner.login}
+						</Text>
+						<Text textStyle="md" color="gray.500">
+							{repositoryDetails?.description}
+						</Text>
+					</>
+				) : (
+					<Text textStyle="2xl" fontWeight="bold">
+						No repository details found
+					</Text>
+				)}
 			</Card.Body>
 		</Card.Root>
 	);

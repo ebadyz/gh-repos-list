@@ -1,10 +1,13 @@
+import { Box, Card } from "@chakra-ui/react";
+import ReactMarkdown from "react-markdown";
+
 import { useRepositoryReadme } from "@/api/repository";
+
 import ErrorCard from "@/components/error-card";
 import CardSkeleton from "@/components/skeleton-card";
+
 import { Route } from "@/routes/$owner/$repo";
-import { Box, Card } from "@chakra-ui/react";
 import { useParams } from "@tanstack/react-router";
-import ReactMarkdown from "react-markdown";
 
 const RepositoryReadme = () => {
 	const params = useParams({ from: Route.fullPath });
@@ -31,7 +34,10 @@ const RepositoryReadme = () => {
 			<ErrorCard
 				errorMessage={repositoryReadmeError.message}
 				onRetry={retryRepositoryReadme}
-				cardProps={{ w: "full" }}
+				justifyContent="center"
+				cardProps={{
+					w: "full",
+				}}
 			/>
 		);
 	}
