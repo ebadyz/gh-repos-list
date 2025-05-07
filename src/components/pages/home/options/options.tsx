@@ -52,4 +52,4 @@ const RepositoryOptions = () => {
 	);
 };
 
-export default RepositoryOptions;
+export { RepositoryOptions };

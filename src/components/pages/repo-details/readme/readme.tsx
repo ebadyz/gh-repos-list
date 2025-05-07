@@ -3,8 +3,8 @@ import ReactMarkdown from "react-markdown";
 
 import { useRepositoryReadme } from "@/api/repository";
 
-import ErrorCard from "@/components/error-card";
-import CardSkeleton from "@/components/skeleton-card";
+import { ErrorCard } from "@/components/error-card";
+import { SkeletonCard } from "@/components/skeleton-card";
 
 import { Route } from "@/routes/$owner/$repo";
 import { useParams } from "@tanstack/react-router";
@@ -23,7 +23,7 @@ const RepositoryReadme = () => {
 	});
 
 	if (repositoryReadmeIsLoading) {
-		return <CardSkeleton size={1} />;
+		return <SkeletonCard size={1} />;
 	}
 
 	if (repositoryReadmeError) {
@@ -68,4 +68,4 @@ const RepositoryReadme = () => {
 	);
 };
 
-export default RepositoryReadme;
+export { RepositoryReadme };

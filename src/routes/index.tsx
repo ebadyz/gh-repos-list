@@ -10,10 +10,9 @@ import {
 	useSearch,
 } from "@tanstack/react-router";
 
-import ErrorCard from "@/components/error-card";
-import { RepositoryOptions } from "@/components/pages/home";
-import Pagination from "@/components/pagination";
-import SkeletonCard from "@/components/skeleton-card";
+import { ErrorCard } from "@/components/error-card";
+import { Pagination, RepositoryOptions } from "@/components/pages";
+import { SkeletonCard } from "@/components/skeleton-card";
 
 import usePagination from "@/hooks/use-pagination";
 

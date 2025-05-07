@@ -3,7 +3,7 @@ import {
 	RepositoryCommits,
 	RepositoryLanguages,
 	RepositoryReadme,
-} from "@/components/pages/repo-details";
+} from "@/components/pages";
 
 import { GridItem, SimpleGrid } from "@chakra-ui/react";
 

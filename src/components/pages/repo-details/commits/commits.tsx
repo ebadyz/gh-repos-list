@@ -4,10 +4,10 @@ import { Route } from "@/routes/$owner/$repo";
 
 import { useParams } from "@tanstack/react-router";
 
-import { useRepositoryCommits } from "@/api/repository";
+import { ErrorCard } from "@/components/error-card";
+import { SkeletonCard } from "@/components/skeleton-card";
 
-import ErrorCard from "@/components/error-card";
-import CardSkeleton from "@/components/skeleton-card";
+import { useRepositoryCommits } from "@/api/repository";
 
 const DETAULT_RECENT_COMMITS_COUNT = 5;
 
@@ -26,7 +26,7 @@ const RepositoryCommits = () => {
 	});
 
 	if (repositoryCommitsIsLoading) {
-		return <CardSkeleton size={1} />;
+		return <SkeletonCard size={1} />;
 	}
 
 	if (repositoryCommitsError) {
@@ -84,4 +84,4 @@ const RepositoryCommits = () => {
 	);
 };
 
-export default RepositoryCommits;
+export { RepositoryCommits };

@@ -28,4 +28,4 @@ const ErrorCard = ({
 	);
 };
 
-export default ErrorCard;
+export { ErrorCard };

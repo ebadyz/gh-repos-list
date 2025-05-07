@@ -1,16 +1,19 @@
-import { Card, Text } from "@chakra-ui/react";
+import { Button, Card, HStack, Icon, Text, useToggle } from "@chakra-ui/react";
 
 import { Route } from "@/routes/$owner/$repo";
 import { useParams } from "@tanstack/react-router";
 
-import ErrorCard from "@/components/error-card";
-import CardSkeleton from "@/components/skeleton-card";
+import { ErrorCard } from "@/components/error-card";
+import { SkeletonCard } from "@/components/skeleton-card";
 
 import { useRepositoryDetails } from "@/api/repository";
+import { RxStar } from "react-icons/rx";
 
 const RepositoryBasicInfo = () => {
 	const params = useParams({ from: Route.fullPath });
 	const full_name = `${params.owner}/${params.repo}`;
+
+	const starToggle = useToggle({ defaultPressed: false });
 
 	const {
 		repositoryDetails,
@@ -21,8 +24,12 @@ const RepositoryBasicInfo = () => {
 		full_name,
 	});
 
+	const toggleStar = () => {
+		starToggle.setPressed(!starToggle.pressed);
+	};
+
 	if (repositoryDetailsIsLoading) {
-		return <CardSkeleton size={1} />;
+		return <SkeletonCard size={1} />;
 	}
 
 	if (repositoryDetailsError) {
@@ -43,9 +50,18 @@ const RepositoryBasicInfo = () => {
 			<Card.Body>
 				{repositoryDetails ? (
 					<>
-						<Text textStyle="2xl" fontWeight="bold">
-							{repositoryDetails?.name}
-						</Text>
+						<HStack justifyContent="space-between">
+							<Text textStyle="2xl" fontWeight="bold">
+								{repositoryDetails?.name}
+							</Text>
+							<Button variant="outline" size="sm" onClick={toggleStar}>
+								<Icon
+									as={RxStar}
+									color={starToggle.pressed ? "yellow" : "gray"}
+								/>
+								{repositoryDetails.stargazers_count}
+							</Button>
+						</HStack>
 						<Text textStyle="sm" color="gray.500" mb="1">
 							by {repositoryDetails?.owner.login}
 						</Text>
@@ -63,4 +79,4 @@ const RepositoryBasicInfo = () => {
 	);
 };
 
-export default RepositoryBasicInfo;
+export { RepositoryBasicInfo };

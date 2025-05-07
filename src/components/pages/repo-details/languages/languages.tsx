@@ -8,8 +8,8 @@ import {
 	Text,
 } from "@chakra-ui/react";
 
-import ErrorCard from "@/components/error-card";
-import CardSkeleton from "@/components/skeleton-card";
+import { ErrorCard } from "@/components/error-card";
+import { SkeletonCard } from "@/components/skeleton-card";
 
 import { Route } from "@/routes/$owner/$repo";
 
@@ -43,7 +43,7 @@ const RepositoryLanguages = () => {
 	});
 
 	if (repositoryLanguagesIsLoading) {
-		return <CardSkeleton size={1} />;
+		return <SkeletonCard size={1} />;
 	}
 
 	if (repositoryLanguagesError) {
@@ -127,4 +127,4 @@ const RepositoryLanguages = () => {
 	);
 };
 
-export default RepositoryLanguages;
+export { RepositoryLanguages };

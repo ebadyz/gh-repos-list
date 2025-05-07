@@ -33,4 +33,4 @@ const Pagination = (props: PaginationRootProps) => {
 	);
 };
 
-export default Pagination;
+export { Pagination };

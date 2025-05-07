@@ -16,4 +16,4 @@ const SkeletonCard = ({ size }: SkeletonCardProps) => (
 	</>
 );
 
-export default SkeletonCard;
+export { SkeletonCard };
